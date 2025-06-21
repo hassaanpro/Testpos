@@ -61,9 +61,13 @@ export const useSalesTrend = (
   return useQuery({
     queryKey: ['sales-trend', startDate, endDate, groupBy],
     queryFn: async () => {
+      // Convert string dates to Date objects to resolve function overloading
+      const startDateObj = new Date(startDate)
+      const endDateObj = new Date(endDate)
+      
       const { data, error } = await supabase.rpc('get_sales_trend', {
-        p_start_date: startDate,
-        p_end_date: endDate,
+        p_start_date: startDateObj,
+        p_end_date: endDateObj,
         p_group_by: groupBy
       })
       
@@ -80,8 +84,8 @@ export const useAverageOrderValue = (startDate: string, endDate: string) => {
     queryKey: ['average-order-value', startDate, endDate],
     queryFn: async () => {
       // Convert string dates to Date objects to resolve function overloading
-      const startDateObj = new Date(startDate + 'T00:00:00')
-      const endDateObj = new Date(endDate + 'T23:59:59')
+      const startDateObj = new Date(startDate)
+      const endDateObj = new Date(endDate)
       
       const { data, error } = await supabase.rpc('get_average_order_value', {
         p_start_date: startDateObj,
@@ -105,11 +109,17 @@ export const useSalesComparison = (
   return useQuery({
     queryKey: ['sales-comparison', currentStart, currentEnd, previousStart, previousEnd],
     queryFn: async () => {
+      // Convert all string dates to Date objects to resolve function overloading
+      const currentStartObj = new Date(currentStart)
+      const currentEndObj = new Date(currentEnd)
+      const previousStartObj = new Date(previousStart)
+      const previousEndObj = new Date(previousEnd)
+      
       const { data, error } = await supabase.rpc('get_sales_comparison', {
-        p_current_start: currentStart,
-        p_current_end: currentEnd,
-        p_previous_start: previousStart,
-        p_previous_end: previousEnd
+        p_current_start: currentStartObj,
+        p_current_end: currentEndObj,
+        p_previous_start: previousStartObj,
+        p_previous_end: previousEndObj
       })
       
       if (error) throw error
@@ -142,8 +152,8 @@ export const useSalesSummaryMetrics = (startDate: string, endDate: string) => {
     queryKey: ['sales-summary-metrics', startDate, endDate],
     queryFn: async () => {
       // Convert string dates to Date objects to resolve function overloading
-      const startDateObj = new Date(startDate + 'T00:00:00')
-      const endDateObj = new Date(endDate + 'T23:59:59')
+      const startDateObj = new Date(startDate)
+      const endDateObj = new Date(endDate)
       
       const { data, error } = await supabase.rpc('get_sales_summary_metrics', {
         p_start_date: startDateObj,
@@ -162,10 +172,13 @@ export const usePeakHoursAnalysis = (startDate: string, endDate: string) => {
   return useQuery({
     queryKey: ['peak-hours-analysis', startDate, endDate],
     queryFn: async () => {
-      // Pass the date strings directly - the server-side function now expects text parameters
+      // Convert string dates to Date objects to resolve function overloading
+      const startDateObj = new Date(startDate)
+      const endDateObj = new Date(endDate)
+      
       const { data, error } = await supabase.rpc('get_peak_hours_analysis', {
-        p_start_date: startDate,
-        p_end_date: endDate
+        p_start_date: startDateObj,
+        p_end_date: endDateObj
       })
       
       if (error) throw error
