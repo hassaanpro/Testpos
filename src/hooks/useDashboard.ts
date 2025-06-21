@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
+import { format } from 'date-fns'
 
 export const useDashboardSummary = () => {
   return useQuery({
@@ -19,8 +20,8 @@ export const useHourlySalesTrend = (date?: string) => {
   return useQuery({
     queryKey: ['hourly-sales-trend', date],
     queryFn: async () => {
-      // Convert string date to Date object to resolve function overloading ambiguity
-      const dateParam = date ? new Date(date + 'T00:00:00') : new Date()
+      // Format the date as a string to resolve function overloading ambiguity
+      const dateParam = date || format(new Date(), 'yyyy-MM-dd')
       
       const { data, error } = await supabase.rpc('get_hourly_sales_trend', {
         p_date: dateParam
